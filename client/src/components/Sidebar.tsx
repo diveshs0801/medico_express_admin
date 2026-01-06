@@ -191,7 +191,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className="w-56 bg-white border-r border-gray-200 min-h-[calc(100vh-61px)] flex flex-col">
+    <aside className="w-56 bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col sticky top-[64px] overflow-hidden">
       <nav className="p-4 flex-1 overflow-y-auto">
         {/* Dashboard Section */}
         <div className="mb-6">

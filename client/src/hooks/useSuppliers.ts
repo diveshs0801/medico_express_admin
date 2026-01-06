@@ -5,17 +5,17 @@ import supplierApi, { CreateSupplierDto, UpdateSupplierDto } from '../services/s
 export const supplierKeys = {
     all: ['suppliers'] as const,
     lists: () => [...supplierKeys.all, 'list'] as const,
-    list: (page: number, limit: number, search?: string) => 
-        [...supplierKeys.lists(), { page, limit, search }] as const,
+    list: (page: number, limit: number, search?: string, sortBy?: string) => 
+        [...supplierKeys.all, { page, limit, search, sortBy }] as const,
     details: () => [...supplierKeys.all, 'detail'] as const,
     detail: (id: string) => [...supplierKeys.details(), id] as const,
 };
 
 // Get all suppliers with pagination
-export const useSuppliers = (page: number = 1, limit: number = 10, search?: string) => {
+export const useSuppliers = (page: number = 1, limit: number = 10, search?: string, sortBy?: string) => {
     return useQuery({
-        queryKey: supplierKeys.list(page, limit, search),
-        queryFn: () => supplierApi.getAll(page, limit, search),
+        queryKey: supplierKeys.list(page, limit, search, sortBy),
+        queryFn: () => supplierApi.getAll(page, limit, search, sortBy),
     });
 };
 

@@ -43,22 +43,24 @@ export interface UpdateSupplierDto extends Partial<CreateSupplierDto> {}
 
 export interface PaginatedSuppliers {
     data: Supplier[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
 }
 
 const supplierApi = {
     // Get all suppliers with pagination
-    getAll: async (page: number = 1, limit: number = 10, search?: string): Promise<PaginatedSuppliers> => {
+    getAll: async (page: number = 1, limit: number = 10, search?: string, sortBy?: string): Promise<PaginatedSuppliers> => {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
         });
-        if (search) {
-            params.append('search', search);
-        }
+        if (search) params.append('search', search);
+        if (sortBy) params.append('sortBy', sortBy);
+        
         const response = await api.get<PaginatedSuppliers>(`/suppliers?${params.toString()}`);
         return response.data;
     },
@@ -84,6 +86,20 @@ const supplierApi = {
     // Delete supplier
     delete: async (id: string): Promise<void> => {
         await api.delete(`/suppliers/${id}`);
+    },
+
+    exportToExcel: async (): Promise<void> => {
+        const response = await api.get('/suppliers/export', {
+            responseType: 'blob',
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'suppliers.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
     },
 };
 
